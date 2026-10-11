@@ -4,4 +4,5 @@
     :license "MIT"
     :depends-on ("gdecl")
     :components ((:file "packages")
-                 (:file "dodge-the-creeps" :depends-on ("packages"))))
+                 (:file "player" :depends-on ("packages"))
+                 (:file "dodge-the-creeps" :depends-on ("packages" "player"))))
