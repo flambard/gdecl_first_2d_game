@@ -1,0 +1,3 @@
+[submodule "gdecl"]
+	path = gdecl
+	url = https://github.com/flambard/gdecl
