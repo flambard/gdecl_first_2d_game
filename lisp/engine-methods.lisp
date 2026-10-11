@@ -35,3 +35,7 @@
 
 (gdext:define-engine-method animated-sprite-2d-set-flip-v ("AnimatedSprite2D" "set_flip_v" 2586408642)
   :arguments ((flip-v gdext-ffi:+variant-type-bool+)))
+
+(gdext:define-engine-vararg-method emit-signal ("Object" "emit_signal" 4047867050)
+  :arguments ((signal-name gdext-ffi:+variant-type-string-name+))
+  :return-type gdext-ffi:+variant-type-int+) ; Error
