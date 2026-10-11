@@ -2,7 +2,7 @@
 
 [ext_resource type="FontFile" uid="uid://bj1u5yi6cfw3h" path="res://fonts/Xolonium-Regular.ttf" id="1_37p78"]
 
-[node name="HUD" type="CanvasLayer"]
+[node name="HUD" type="HUD"]
 
 [node name="ScoreLabel" type="Label" parent="."]
 anchors_preset = 5
@@ -56,3 +56,6 @@ text = "Start"
 [node name="MessageTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
+[connection signal="pressed" from="StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="timeout" from="MessageTimer" to="." method="_on_message_timer_timeout"]

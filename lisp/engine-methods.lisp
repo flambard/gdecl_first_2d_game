@@ -84,3 +84,6 @@
   :arguments ((node gdext-ffi:+variant-type-object+)
               (force-readable-name gdext-ffi:+variant-type-bool+ nil)
               (internal gdext-ffi:+variant-type-int+ 0))) ; Node.InternalMode
+
+(gdext:define-engine-method label-set-text ("Label" "set_text" 83702148)
+  :arguments ((text gdext-ffi:+variant-type-string+)))
