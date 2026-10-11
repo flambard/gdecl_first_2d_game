@@ -28,7 +28,12 @@
   (gdext:bind-method "Main" "new_game" #'main-new-game)
   (gdext:bind-method "Main" "_on_score_timer_timeout" #'main-on-score-timer-timeout)
   (gdext:bind-method "Main" "_on_start_timer_timeout" #'main-on-start-timer-timeout)
-  (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout))
+  (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout)
+  (gdext:bind-virtual "Main" "_ready" #'main-ready))
+
+;; Temporary, to start a game when the scene runs, until the HUD does it
+(defun main-ready (main)
+  (main-new-game main))
 
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
