@@ -1,0 +1,7 @@
+# Build output
+/application.a
+/build/
+/project/bin/
+
+# Godot
+/project/.godot/
