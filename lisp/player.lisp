@@ -25,6 +25,8 @@
                      :arguments `(("speed" ,gdext-ffi:+variant-type-int+)))
   (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed")
   (gdext:bind-signal "Player" "hit")
+  (gdext:bind-method "Player" "start" #'player-start
+                     :arguments `(("pos" ,gdext-ffi:+variant-type-vector2+)))
   (gdext:bind-method "Player" "_on_body_entered" #'player-on-body-entered
                      :arguments `(("body" ,gdext-ffi:+variant-type-object+)))
   (gdext:bind-virtual "Player" "_ready" #'player-ready)
@@ -79,3 +81,9 @@
     (emit-signal object (gdext:sname "hit"))
     ;; Must be deferred as we can't change physics properties on a physics callback.
     (set-deferred (player-collision-shape player) (gdext:sname "disabled") t)))
+
+(defun player-start (player pos)
+  (let ((object (player-object player)))
+    (set-position object pos)
+    (show object)
+    (collision-shape-2d-set-disabled (player-collision-shape player) nil)))

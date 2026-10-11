@@ -45,3 +45,8 @@
 (gdext:define-engine-method set-deferred ("Object" "set_deferred" 3776071444)
   :arguments ((property gdext-ffi:+variant-type-string-name+)
               (value :variant)))
+
+(gdext:define-engine-method show ("CanvasItem" "show" 3218959716))
+
+(gdext:define-engine-method collision-shape-2d-set-disabled ("CollisionShape2D" "set_disabled" 2586408642)
+  :arguments ((disabled gdext-ffi:+variant-type-bool+)))
