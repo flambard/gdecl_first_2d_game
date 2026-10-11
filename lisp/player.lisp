@@ -20,8 +20,31 @@
                      (lambda (player speed) (setf (player-speed player) speed))
                      :arguments `(("speed" ,gdext-ffi:+variant-type-int+)))
   (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed")
-  (gdext:bind-virtual "Player" "_ready" #'player-ready))
+  (gdext:bind-virtual "Player" "_ready" #'player-ready)
+  (gdext:bind-virtual "Player" "_process" #'player-process
+                      :arguments `(("delta" ,gdext-ffi:+variant-type-float+))))
 
 (defun player-ready (player)
   (setf (player-screen-size player)
         (gdext:rect2-size (get-viewport-rect (player-object player)))))
+
+(defun action-pressed-p (action)
+  (is-action-pressed (gdext:singleton "Input") action))
+
+(defun player-process (player delta)
+  (let ((velocity (gdext:vector2))      ; The player's movement vector
+        (object (player-object player)))
+    (when (action-pressed-p (gdext:sname "move_right"))
+      (incf (gdext:vector2-x velocity)))
+    (when (action-pressed-p (gdext:sname "move_left"))
+      (decf (gdext:vector2-x velocity)))
+    (when (action-pressed-p (gdext:sname "move_down"))
+      (incf (gdext:vector2-y velocity)))
+    (when (action-pressed-p (gdext:sname "move_up"))
+      (decf (gdext:vector2-y velocity)))
+    (when (> (gdext:vector2-length velocity) 0)
+      (setf velocity (gdext:vector2* (gdext:vector2-normalized velocity) (player-speed player))))
+    (set-position object (gdext:vector2-clamp (gdext:vector2+ (get-position object)
+                                                              (gdext:vector2* velocity delta))
+                                              (gdext:vector2)
+                                              (player-screen-size player)))))
