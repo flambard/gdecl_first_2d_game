@@ -15,3 +15,14 @@
   :arguments ((action gdext-ffi:+variant-type-string-name+)
               (exact-match gdext-ffi:+variant-type-bool+ nil))
   :return-type gdext-ffi:+variant-type-bool+)
+
+(gdext:define-engine-method get-node ("Node" "get_node" 2734337346)
+  :arguments ((path gdext-ffi:+variant-type-node-path+))
+  :return-type gdext-ffi:+variant-type-object+)
+
+(gdext:define-engine-method animated-sprite-2d-play ("AnimatedSprite2D" "play" 3269405555)
+  :arguments ((name gdext-ffi:+variant-type-string-name+ (gdext:sname ""))
+              (custom-speed gdext-ffi:+variant-type-float+ 1.0)
+              (from-end gdext-ffi:+variant-type-bool+ nil)))
+
+(gdext:define-engine-method animated-sprite-2d-stop ("AnimatedSprite2D" "stop" 3218959716))

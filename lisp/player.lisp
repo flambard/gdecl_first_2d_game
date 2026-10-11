@@ -9,7 +9,9 @@
   ;; How fast the player will move (pixels/sec). Exported as the property speed.
   (speed 400)
   ;; Size of the game window
-  screen-size)
+  screen-size
+  ;; The child node AnimatedSprite2D, set in _ready like an @onready var
+  animated-sprite)
 
 (defun register-player ()
   (gdext:register-class "Player" "Area2D"
@@ -26,7 +28,9 @@
 
 (defun player-ready (player)
   (setf (player-screen-size player)
-        (gdext:rect2-size (get-viewport-rect (player-object player)))))
+        (gdext:rect2-size (get-viewport-rect (player-object player)))
+        (player-animated-sprite player)
+        (get-node (player-object player) (gdext:npath "AnimatedSprite2D"))))
 
 (defun action-pressed-p (action)
   (is-action-pressed (gdext:singleton "Input") action))
@@ -42,8 +46,12 @@
       (incf (gdext:vector2-y velocity)))
     (when (action-pressed-p (gdext:sname "move_up"))
       (decf (gdext:vector2-y velocity)))
-    (when (> (gdext:vector2-length velocity) 0)
-      (setf velocity (gdext:vector2* (gdext:vector2-normalized velocity) (player-speed player))))
+    (cond ((> (gdext:vector2-length velocity) 0)
+           (setf velocity (gdext:vector2* (gdext:vector2-normalized velocity)
+                                          (player-speed player)))
+           (animated-sprite-2d-play (player-animated-sprite player)))
+          (t
+           (animated-sprite-2d-stop (player-animated-sprite player))))
     (set-position object (gdext:vector2-clamp (gdext:vector2+ (get-position object)
                                                               (gdext:vector2* velocity delta))
                                               (gdext:vector2)
