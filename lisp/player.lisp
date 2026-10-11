@@ -10,8 +10,10 @@
   (speed 400)
   ;; Size of the game window
   screen-size
-  ;; The child node AnimatedSprite2D, set in _ready like an @onready var
-  animated-sprite)
+  ;; The child nodes AnimatedSprite2D and CollisionShape2D, set in _ready like
+  ;; @onready vars
+  animated-sprite
+  collision-shape)
 
 (defun register-player ()
   (gdext:register-class "Player" "Area2D"
@@ -33,7 +35,9 @@
   (setf (player-screen-size player)
         (gdext:rect2-size (get-viewport-rect (player-object player)))
         (player-animated-sprite player)
-        (get-node (player-object player) (gdext:npath "AnimatedSprite2D"))))
+        (get-node (player-object player) (gdext:npath "AnimatedSprite2D"))
+        (player-collision-shape player)
+        (get-node (player-object player) (gdext:npath "CollisionShape2D"))))
 
 (defun action-pressed-p (action)
   (is-action-pressed (gdext:singleton "Input") action))
@@ -72,4 +76,6 @@
   (declare (ignore body))
   (let ((object (player-object player)))
     (hide object)                       ; Player disappears after being hit.
-    (emit-signal object (gdext:sname "hit"))))
+    (emit-signal object (gdext:sname "hit"))
+    ;; Must be deferred as we can't change physics properties on a physics callback.
+    (set-deferred (player-collision-shape player) (gdext:sname "disabled") t)))

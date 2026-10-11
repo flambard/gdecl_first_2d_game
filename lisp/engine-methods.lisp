@@ -41,3 +41,7 @@
   :return-type gdext-ffi:+variant-type-int+) ; Error
 
 (gdext:define-engine-method hide ("CanvasItem" "hide" 3218959716))
+
+(gdext:define-engine-method set-deferred ("Object" "set_deferred" 3776071444)
+  :arguments ((property gdext-ffi:+variant-type-string-name+)
+              (value :variant)))
