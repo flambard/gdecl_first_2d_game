@@ -63,3 +63,24 @@
   :arguments ((time-sec gdext-ffi:+variant-type-float+ -1.0)))
 
 (gdext:define-engine-method timer-stop ("Timer" "stop" 3218959716))
+
+(gdext:define-engine-method packed-scene-instantiate ("PackedScene" "instantiate" 2628778455)
+  :arguments ((edit-state gdext-ffi:+variant-type-int+ 0)) ; PackedScene.GenEditState
+  :return-type gdext-ffi:+variant-type-object+)
+
+(gdext:define-engine-method path-follow-2d-set-progress-ratio ("PathFollow2D" "set_progress_ratio" 373806689)
+  :arguments ((ratio gdext-ffi:+variant-type-float+)))
+
+(gdext:define-engine-method get-rotation ("Node2D" "get_rotation" 1740695150)
+  :return-type gdext-ffi:+variant-type-float+)
+
+(gdext:define-engine-method set-rotation ("Node2D" "set_rotation" 373806689)
+  :arguments ((radians gdext-ffi:+variant-type-float+)))
+
+(gdext:define-engine-method rigid-body-2d-set-linear-velocity ("RigidBody2D" "set_linear_velocity" 743155724)
+  :arguments ((linear-velocity gdext-ffi:+variant-type-vector2+)))
+
+(gdext:define-engine-method add-child ("Node" "add_child" 3863233950)
+  :arguments ((node gdext-ffi:+variant-type-object+)
+              (force-readable-name gdext-ffi:+variant-type-bool+ nil)
+              (internal gdext-ffi:+variant-type-int+ 0))) ; Node.InternalMode
