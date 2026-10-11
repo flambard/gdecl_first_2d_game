@@ -39,3 +39,5 @@
 (gdext:define-engine-vararg-method emit-signal ("Object" "emit_signal" 4047867050)
   :arguments ((signal-name gdext-ffi:+variant-type-string-name+))
   :return-type gdext-ffi:+variant-type-int+) ; Error
+
+(gdext:define-engine-method hide ("CanvasItem" "hide" 3218959716))

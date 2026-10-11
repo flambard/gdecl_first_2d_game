@@ -23,6 +23,8 @@
                      :arguments `(("speed" ,gdext-ffi:+variant-type-int+)))
   (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed")
   (gdext:bind-signal "Player" "hit")
+  (gdext:bind-method "Player" "_on_body_entered" #'player-on-body-entered
+                     :arguments `(("body" ,gdext-ffi:+variant-type-object+)))
   (gdext:bind-virtual "Player" "_ready" #'player-ready)
   (gdext:bind-virtual "Player" "_process" #'player-process
                       :arguments `(("delta" ,gdext-ffi:+variant-type-float+))))
@@ -65,3 +67,9 @@
           ((/= (gdext:vector2-y velocity) 0)
            (animated-sprite-2d-set-animation sprite (gdext:sname "up"))
            (animated-sprite-2d-set-flip-v sprite (> (gdext:vector2-y velocity) 0))))))
+
+(defun player-on-body-entered (player body)
+  (declare (ignore body))
+  (let ((object (player-object player)))
+    (hide object)                       ; Player disappears after being hit.
+    (emit-signal object (gdext:sname "hit"))))
