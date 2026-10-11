@@ -52,3 +52,9 @@
   :arguments ((disabled gdext-ffi:+variant-type-bool+)))
 
 (gdext:define-engine-method queue-free ("Node" "queue_free" 3218959716))
+
+(gdext:define-engine-method animated-sprite-2d-get-sprite-frames ("AnimatedSprite2D" "get_sprite_frames" 3804851214)
+  :return-type gdext-ffi:+variant-type-object+) ; SpriteFrames, a RefCounted
+
+(gdext:define-engine-method sprite-frames-get-animation-names ("SpriteFrames" "get_animation_names" 1139954409)
+  :return-type gdext-ffi:+variant-type-packed-string-array+)
