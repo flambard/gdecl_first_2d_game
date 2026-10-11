@@ -2,6 +2,7 @@
 
 (defun start ()
   (register-player)
+  (register-mob)
   (format t "Dodge the Creeps: Lisp code loaded~%")
   (finish-output))
 

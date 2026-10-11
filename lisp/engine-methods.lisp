@@ -50,3 +50,5 @@
 
 (gdext:define-engine-method collision-shape-2d-set-disabled ("CollisionShape2D" "set_disabled" 2586408642)
   :arguments ((disabled gdext-ffi:+variant-type-bool+)))
+
+(gdext:define-engine-method queue-free ("Node" "queue_free" 3218959716))
