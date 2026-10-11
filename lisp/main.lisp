@@ -23,9 +23,23 @@
                        "get_mob_scene" "set_mob_scene"
                        :hint gdext-ffi:+property-hint-resource-type+
                        :hint-string "PackedScene"
-                       :property-class-name "PackedScene"))
+                       :property-class-name "PackedScene")
+  (gdext:bind-method "Main" "game_over" #'main-game-over)
+  (gdext:bind-method "Main" "new_game" #'main-new-game))
 
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
     (setf (main-mob-scene main) (gdext:add-reference mob-scene))
     (gdext:release-reference old)))
+
+(defun main-game-over (main)
+  (let ((object (main-object main)))
+    (timer-stop (get-node object (gdext:npath "ScoreTimer")))
+    (timer-stop (get-node object (gdext:npath "MobTimer")))))
+
+(defun main-new-game (main)
+  (let ((object (main-object main)))
+    (setf (main-score main) 0)
+    (player-start (gdext:lisp-object (get-node object (gdext:npath "Player")))
+                  (get-position (get-node object (gdext:npath "StartPosition"))))
+    (timer-start (get-node object (gdext:npath "StartTimer")))))

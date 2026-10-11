@@ -58,3 +58,8 @@
 
 (gdext:define-engine-method sprite-frames-get-animation-names ("SpriteFrames" "get_animation_names" 1139954409)
   :return-type gdext-ffi:+variant-type-packed-string-array+)
+
+(gdext:define-engine-method timer-start ("Timer" "start" 1392008558)
+  :arguments ((time-sec gdext-ffi:+variant-type-float+ -1.0)))
+
+(gdext:define-engine-method timer-stop ("Timer" "stop" 3218959716))
