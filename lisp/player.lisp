@@ -19,4 +19,9 @@
   (gdext:bind-method "Player" "set_speed"
                      (lambda (player speed) (setf (player-speed player) speed))
                      :arguments `(("speed" ,gdext-ffi:+variant-type-int+)))
-  (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed"))
+  (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed")
+  (gdext:bind-virtual "Player" "_ready" #'player-ready))
+
+(defun player-ready (player)
+  (setf (player-screen-size player)
+        (gdext:rect2-size (get-viewport-rect (player-object player)))))
