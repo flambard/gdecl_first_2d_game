@@ -5,6 +5,7 @@
   (setf *random-state* (make-random-state t))
   (register-player)
   (register-mob)
+  (register-main)
   (format t "Dodge the Creeps: Lisp code loaded~%")
   (finish-output))
 
