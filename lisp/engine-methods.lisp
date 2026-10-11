@@ -26,3 +26,12 @@
               (from-end gdext-ffi:+variant-type-bool+ nil)))
 
 (gdext:define-engine-method animated-sprite-2d-stop ("AnimatedSprite2D" "stop" 3218959716))
+
+(gdext:define-engine-method animated-sprite-2d-set-animation ("AnimatedSprite2D" "set_animation" 3304788590)
+  :arguments ((name gdext-ffi:+variant-type-string-name+)))
+
+(gdext:define-engine-method animated-sprite-2d-set-flip-h ("AnimatedSprite2D" "set_flip_h" 2586408642)
+  :arguments ((flip-h gdext-ffi:+variant-type-bool+)))
+
+(gdext:define-engine-method animated-sprite-2d-set-flip-v ("AnimatedSprite2D" "set_flip_v" 2586408642)
+  :arguments ((flip-v gdext-ffi:+variant-type-bool+)))
