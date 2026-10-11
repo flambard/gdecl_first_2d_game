@@ -25,7 +25,9 @@
                        :hint-string "PackedScene"
                        :property-class-name "PackedScene")
   (gdext:bind-method "Main" "game_over" #'main-game-over)
-  (gdext:bind-method "Main" "new_game" #'main-new-game))
+  (gdext:bind-method "Main" "new_game" #'main-new-game)
+  (gdext:bind-method "Main" "_on_score_timer_timeout" #'main-on-score-timer-timeout)
+  (gdext:bind-method "Main" "_on_start_timer_timeout" #'main-on-start-timer-timeout))
 
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
@@ -43,3 +45,11 @@
     (player-start (gdext:lisp-object (get-node object (gdext:npath "Player")))
                   (get-position (get-node object (gdext:npath "StartPosition"))))
     (timer-start (get-node object (gdext:npath "StartTimer")))))
+
+(defun main-on-score-timer-timeout (main)
+  (incf (main-score main)))
+
+(defun main-on-start-timer-timeout (main)
+  (let ((object (main-object main)))
+    (timer-start (get-node object (gdext:npath "MobTimer")))
+    (timer-start (get-node object (gdext:npath "ScoreTimer")))))
