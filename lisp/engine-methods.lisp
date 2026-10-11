@@ -87,3 +87,13 @@
 
 (gdext:define-engine-method label-set-text ("Label" "set_text" 83702148)
   :arguments ((text gdext-ffi:+variant-type-string+)))
+
+(gdext:define-engine-method get-tree ("Node" "get_tree" 2958820483)
+  :return-type gdext-ffi:+variant-type-object+)
+
+(gdext:define-engine-method scene-tree-create-timer ("SceneTree" "create_timer" 2709170273)
+  :arguments ((time-sec gdext-ffi:+variant-type-float+)
+              (process-always gdext-ffi:+variant-type-bool+ t)
+              (process-in-physics gdext-ffi:+variant-type-bool+ nil)
+              (ignore-time-scale gdext-ffi:+variant-type-bool+ nil))
+  :return-type gdext-ffi:+variant-type-object+) ; SceneTreeTimer, a RefCounted
