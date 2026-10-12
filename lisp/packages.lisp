@@ -1,2 +1,2 @@
 (defpackage #:dodge-the-creeps
-  (:use #:cl))
+  (:use #:cl #:godot))

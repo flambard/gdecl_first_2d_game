@@ -24,10 +24,10 @@
 ;;     $Message.show()
 ;;     $MessageTimer.start()
 (defun hud-show-message (hud text)
-  (let ((message (get-node hud "Message")))
+  (let ((message (node-get-node hud "Message")))
     (label-set-text message text)
-    (show message)
-    (timer-start (get-node hud "MessageTimer"))))
+    (canvas-item-show message)
+    (timer-start (node-get-node hud "MessageTimer"))))
 
 ;; func show_game_over():
 ;;     show_message("Game Over")
@@ -42,29 +42,28 @@
 (defun hud-show-game-over (hud)
   (hud-show-message hud "Game Over")
   ;; Wait until the MessageTimer has counted down.
-  (gdext:after-signal ((get-node hud "MessageTimer") "timeout"
-                       :target hud)
-    (let ((message (get-node hud "Message")))
+  (gdext:after-signal ((node-get-node hud "MessageTimer") "timeout" :target hud)
+    (let ((message (node-get-node hud "Message")))
       (label-set-text message "Dodge the Creeps!")
-      (show message))
+      (canvas-item-show message))
     ;; Make a one-shot timer and wait for it to finish.
-    (gdext:with-reference (timer (scene-tree-create-timer (get-tree hud) 1.0))
+    (gdext:with-reference (timer (scene-tree-create-timer (node-get-tree hud) 1.0))
       (gdext:after-signal (timer "timeout" :target hud)
-        (show (get-node hud "StartButton"))))))
+        (canvas-item-show (node-get-node hud "StartButton"))))))
 
 ;; func update_score(score):
 ;;     $ScoreLabel.text = str(score)
 (defun hud-update-score (hud score)
-  (label-set-text (get-node hud "ScoreLabel") (princ-to-string score)))
+  (label-set-text (node-get-node hud "ScoreLabel") (princ-to-string score)))
 
 ;; func _on_start_button_pressed():
 ;;     $StartButton.hide()
 ;;     start_game.emit()
 (defun hud-on-start-button-pressed (hud)
-  (hide (get-node hud "StartButton"))
-  (emit-signal hud "start_game"))
+  (canvas-item-hide (node-get-node hud "StartButton"))
+  (object-emit-signal hud "start_game"))
 
 ;; func _on_message_timer_timeout():
 ;;     $Message.hide()
 (defun hud-on-message-timer-timeout (hud)
-  (hide (get-node hud "Message")))
+  (canvas-item-hide (node-get-node hud "Message")))

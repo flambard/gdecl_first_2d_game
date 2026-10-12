@@ -30,15 +30,15 @@
 ;;     hide()
 (defun player-ready (player)
   (setf (player-screen-size player)
-        (gdext:rect2-size (get-viewport-rect player))
+        (gdext:rect2-size (canvas-item-get-viewport-rect player))
         (player-animated-sprite player)
-        (get-node player "AnimatedSprite2D")
+        (node-get-node player "AnimatedSprite2D")
         (player-collision-shape player)
-        (get-node player "CollisionShape2D"))
-  (hide player))
+        (node-get-node player "CollisionShape2D"))
+  (canvas-item-hide player))
 
 (defun action-pressed-p (action)
-  (is-action-pressed (gdext:singleton "Input") action))
+  (input-is-action-pressed (gdext:singleton "Input") action))
 
 ;; func _process(delta):
 ;;     var velocity = Vector2.ZERO # The player's movement vector.
@@ -85,10 +85,11 @@
            (animated-sprite-2d-play sprite))
           (t
            (animated-sprite-2d-stop sprite)))
-    (set-position player (gdext:vector2-clamp (gdext:vector2+ (get-position player)
-                                                              (gdext:vector2* velocity delta))
-                                              (gdext:vector2)
-                                              (player-screen-size player)))
+    (node-2d-set-position player
+                          (gdext:vector2-clamp (gdext:vector2+ (node-2d-get-position player)
+                                                               (gdext:vector2* velocity delta))
+                                               (gdext:vector2)
+                                               (player-screen-size player)))
     (cond ((/= (gdext:vector2-x velocity) 0)
            (animated-sprite-2d-set-animation sprite "walk")
            (animated-sprite-2d-set-flip-v sprite nil)
@@ -104,16 +105,16 @@
 ;;     $CollisionShape2D.set_deferred("disabled", true)
 (defun player-on-body-entered (player body)
   (declare (ignore body))
-  (hide player)                         ; Player disappears after being hit.
-  (emit-signal player "hit")
+  (canvas-item-hide player)             ; Player disappears after being hit.
+  (object-emit-signal player "hit")
   ;; Must be deferred as we can't change physics properties on a physics callback.
-  (set-deferred (player-collision-shape player) "disabled" t))
+  (object-set-deferred (player-collision-shape player) "disabled" t))
 
 ;; func start(pos):
 ;;     position = pos
 ;;     show()
 ;;     $CollisionShape2D.disabled = false
 (defun player-start (player pos)
-  (set-position player pos)
-  (show player)
+  (node-2d-set-position player pos)
+  (canvas-item-show player)
   (collision-shape-2d-set-disabled (player-collision-shape player) nil))
