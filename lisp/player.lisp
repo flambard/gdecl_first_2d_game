@@ -37,9 +37,6 @@
         (node-get-node player "CollisionShape2D"))
   (canvas-item-hide player))
 
-(defun action-pressed-p (action)
-  (input-is-action-pressed (gdext:singleton "Input") action))
-
 ;; func _process(delta):
 ;;     var velocity = Vector2.ZERO # The player's movement vector.
 ;;     if Input.is_action_pressed("move_right"):
@@ -71,13 +68,13 @@
 (defun player-process (player delta)
   (let ((velocity (gdext:vector2))      ; The player's movement vector
         (sprite (player-animated-sprite player)))
-    (when (action-pressed-p (gdext:sname "move_right"))
+    (when (input-is-action-pressed "move_right")
       (incf (gdext:vector2-x velocity)))
-    (when (action-pressed-p (gdext:sname "move_left"))
+    (when (input-is-action-pressed "move_left")
       (decf (gdext:vector2-x velocity)))
-    (when (action-pressed-p (gdext:sname "move_down"))
+    (when (input-is-action-pressed "move_down")
       (incf (gdext:vector2-y velocity)))
-    (when (action-pressed-p (gdext:sname "move_up"))
+    (when (input-is-action-pressed "move_up")
       (decf (gdext:vector2-y velocity)))
     (cond ((> (gdext:vector2-length velocity) 0)
            (setf velocity (gdext:vector2* (gdext:vector2-normalized velocity)
