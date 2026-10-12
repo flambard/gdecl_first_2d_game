@@ -9,24 +9,14 @@
 
 ;; The Lisp object of a Main is a MAIN
 (gdext:define-class main ("Main" "Node")
-  (;; The Mob scene, a PackedScene. A RefCounted object, so Main holds a
-   ;; reference to it while it's here.
-   (mob-scene nil :export :object :class "PackedScene" :setter set-main-mob-scene)
+  (;; The Mob scene. A PackedScene is RefCounted, so Main keeps a reference to it.
+   (mob-scene nil :export :object :class "PackedScene")
    score)
-  (:destructor main-free)
   (:method "game_over" main-game-over)
   (:method "new_game" main-new-game)
   (:method "_on_score_timer_timeout" main-on-score-timer-timeout)
   (:method "_on_start_timer_timeout" main-on-start-timer-timeout)
   (:method "_on_mob_timer_timeout" main-on-mob-timer-timeout))
-
-(defun set-main-mob-scene (main mob-scene)
-  (let ((old (main-mob-scene main)))
-    (setf (main-mob-scene main) (gdext:add-reference mob-scene))
-    (gdext:release-reference old)))
-
-(defun main-free (main)
-  (gdext:release-reference (main-mob-scene main)))
 
 ;; func game_over():
 ;;     $ScoreTimer.stop()
