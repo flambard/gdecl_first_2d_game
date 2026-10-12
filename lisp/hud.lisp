@@ -47,9 +47,8 @@
       (label-set-text message "Dodge the Creeps!")
       (canvas-item-show message))
     ;; Make a one-shot timer and wait for it to finish.
-    (gdext:with-reference (timer (scene-tree-create-timer (node-get-tree hud) 1.0))
-      (gdext:after-signal (timer "timeout" :target hud)
-        (canvas-item-show (node-get-node hud "StartButton"))))))
+    (gdext:after-signal ((scene-tree-create-timer (node-get-tree hud) 1.0) "timeout" :target hud)
+      (canvas-item-show (node-get-node hud "StartButton")))))
 
 ;; func update_score(score):
 ;;     $ScoreLabel.text = str(score)
