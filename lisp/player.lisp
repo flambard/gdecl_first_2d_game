@@ -15,10 +15,9 @@
    (speed 400 :export :int)
    ;; Size of the game window
    screen-size
-   ;; The child nodes AnimatedSprite2D and CollisionShape2D, set in _ready like
-   ;; @onready vars
-   animated-sprite
-   collision-shape)
+   ;; The child nodes AnimatedSprite2D and CollisionShape2D
+   (animated-sprite nil :onready "AnimatedSprite2D")
+   (collision-shape nil :onready "CollisionShape2D"))
   (:signal "hit")
   (:method "start" player-start :arguments (("pos" :vector2)))
   (:method "_on_body_entered" player-on-body-entered :arguments (("body" :object)))
@@ -29,12 +28,7 @@
 ;;     screen_size = get_viewport_rect().size
 ;;     hide()
 (defun player-ready (player)
-  (setf (player-screen-size player)
-        (rect2-size (canvas-item-get-viewport-rect player))
-        (player-animated-sprite player)
-        (node-get-node player "AnimatedSprite2D")
-        (player-collision-shape player)
-        (node-get-node player "CollisionShape2D"))
+  (setf (player-screen-size player) (rect2-size (canvas-item-get-viewport-rect player)))
   (canvas-item-hide player))
 
 ;; func _process(delta):
