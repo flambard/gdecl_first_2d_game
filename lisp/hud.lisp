@@ -15,10 +15,10 @@
   ;; Notifies `Main` node that the button has been pressed
   (gdext:bind-signal "HUD" "start_game")
   (gdext:bind-method "HUD" "show_message" #'hud-show-message
-                     :arguments `(("text" ,gdext-ffi:+variant-type-string+)))
+                     :arguments '(("text" :string)))
   (gdext:bind-method "HUD" "show_game_over" #'hud-show-game-over)
   (gdext:bind-method "HUD" "update_score" #'hud-update-score
-                     :arguments `(("score" ,gdext-ffi:+variant-type-int+)))
+                     :arguments '(("score" :int)))
   (gdext:bind-method "HUD" "_on_start_button_pressed" #'hud-on-start-button-pressed)
   (gdext:bind-method "HUD" "_on_message_timer_timeout" #'hud-on-message-timer-timeout))
 

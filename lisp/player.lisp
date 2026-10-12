@@ -26,19 +26,18 @@
   (gdext:register-class "Player" "Area2D"
                         :constructor (lambda (object) (make-player :object object)))
   (gdext:bind-method "Player" "get_speed" #'player-speed
-                     :return-type gdext-ffi:+variant-type-int+)
+                     :return-type :int)
   (gdext:bind-method "Player" "set_speed"
                      (lambda (player speed) (setf (player-speed player) speed))
-                     :arguments `(("speed" ,gdext-ffi:+variant-type-int+)))
-  (gdext:bind-property "Player" "speed" gdext-ffi:+variant-type-int+ "get_speed" "set_speed")
+                     :arguments '(("speed" :int)))
+  (gdext:bind-property "Player" "speed" :int "get_speed" "set_speed")
   (gdext:bind-signal "Player" "hit")
   (gdext:bind-method "Player" "start" #'player-start
-                     :arguments `(("pos" ,gdext-ffi:+variant-type-vector2+)))
+                     :arguments '(("pos" :vector2)))
   (gdext:bind-method "Player" "_on_body_entered" #'player-on-body-entered
-                     :arguments `(("body" ,gdext-ffi:+variant-type-object+)))
+                     :arguments '(("body" :object)))
   (gdext:bind-virtual "Player" "_ready" #'player-ready)
-  (gdext:bind-virtual "Player" "_process" #'player-process
-                      :arguments `(("delta" ,gdext-ffi:+variant-type-float+))))
+  (gdext:bind-virtual "Player" "_process" #'player-process))
 
 ;; func _ready():
 ;;     screen_size = get_viewport_rect().size

@@ -21,10 +21,10 @@
                         :constructor (lambda (object) (make-main :object object))
                         :destructor (lambda (main) (gdext:release-reference (main-mob-scene main))))
   (gdext:bind-method "Main" "get_mob_scene" #'main-mob-scene
-                     :return-type gdext-ffi:+variant-type-object+)
+                     :return-type :object)
   (gdext:bind-method "Main" "set_mob_scene" #'set-main-mob-scene
-                     :arguments `(("mob_scene" ,gdext-ffi:+variant-type-object+)))
-  (gdext:bind-property "Main" "mob_scene" gdext-ffi:+variant-type-object+
+                     :arguments '(("mob_scene" :object)))
+  (gdext:bind-property "Main" "mob_scene" :object
                        "get_mob_scene" "set_mob_scene"
                        :hint gdext-ffi:+property-hint-resource-type+
                        :hint-string "PackedScene"
