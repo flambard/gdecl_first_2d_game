@@ -23,8 +23,7 @@
   (let ((sprite (node-get-node mob "AnimatedSprite2D")))
     (gdext:with-reference (sprite-frames (animated-sprite-2d-get-sprite-frames sprite))
       (let ((mob-types (sprite-frames-get-animation-names sprite-frames)))
-        (gdext:with-string-name (animation (pick-random mob-types))
-          (animated-sprite-2d-set-animation sprite animation))))
+        (animated-sprite-2d-set-animation sprite (pick-random mob-types))))
     (animated-sprite-2d-play sprite)))
 
 ;; func _on_visible_on_screen_notifier_2d_screen_exited():
