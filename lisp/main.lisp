@@ -106,7 +106,7 @@
       (incf direction (randf-range (- (/ pi 4)) (/ pi 4)))
       (node-2d-set-rotation mob direction)
       ;; Choose the velocity for the mob.
-      (let ((velocity (gdext:vector2 (float (randf-range 150 250) 1.0) 0.0)))
-        (rigid-body-2d-set-linear-velocity mob (gdext:vector2-rotated velocity direction))))
+      (let ((velocity (vector2 (float (randf-range 150 250) 1.0) 0.0)))
+        (rigid-body-2d-set-linear-velocity mob (vector2-rotated velocity direction))))
     ;; Spawn the mob by adding it to the Main scene.
     (node-add-child main mob)))

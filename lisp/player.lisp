@@ -30,7 +30,7 @@
 ;;     hide()
 (defun player-ready (player)
   (setf (player-screen-size player)
-        (gdext:rect2-size (canvas-item-get-viewport-rect player))
+        (rect2-size (canvas-item-get-viewport-rect player))
         (player-animated-sprite player)
         (node-get-node player "AnimatedSprite2D")
         (player-collision-shape player)
@@ -66,34 +66,33 @@
 ;;         $AnimatedSprite2D.animation = "up"
 ;;         $AnimatedSprite2D.flip_v = velocity.y > 0
 (defun player-process (player delta)
-  (let ((velocity (gdext:vector2))      ; The player's movement vector
+  (let ((velocity (vector2))            ; The player's movement vector
         (sprite (player-animated-sprite player)))
     (when (input-is-action-pressed "move_right")
-      (incf (gdext:vector2-x velocity)))
+      (incf (vector2-x velocity)))
     (when (input-is-action-pressed "move_left")
-      (decf (gdext:vector2-x velocity)))
+      (decf (vector2-x velocity)))
     (when (input-is-action-pressed "move_down")
-      (incf (gdext:vector2-y velocity)))
+      (incf (vector2-y velocity)))
     (when (input-is-action-pressed "move_up")
-      (decf (gdext:vector2-y velocity)))
-    (cond ((> (gdext:vector2-length velocity) 0)
-           (setf velocity (gdext:vector2* (gdext:vector2-normalized velocity)
-                                          (player-speed player)))
+      (decf (vector2-y velocity)))
+    (cond ((> (vector2-length velocity) 0)
+           (setf velocity (vector2* (vector2-normalized velocity) (player-speed player)))
            (animated-sprite-2d-play sprite))
           (t
            (animated-sprite-2d-stop sprite)))
     (node-2d-set-position player
-                          (gdext:vector2-clamp (gdext:vector2+ (node-2d-get-position player)
-                                                               (gdext:vector2* velocity delta))
-                                               (gdext:vector2)
-                                               (player-screen-size player)))
-    (cond ((/= (gdext:vector2-x velocity) 0)
+                          (vector2-clamp (vector2+ (node-2d-get-position player)
+                                                   (vector2* velocity delta))
+                                         (vector2)
+                                         (player-screen-size player)))
+    (cond ((/= (vector2-x velocity) 0)
            (animated-sprite-2d-set-animation sprite "walk")
            (animated-sprite-2d-set-flip-v sprite nil)
-           (animated-sprite-2d-set-flip-h sprite (< (gdext:vector2-x velocity) 0)))
-          ((/= (gdext:vector2-y velocity) 0)
+           (animated-sprite-2d-set-flip-h sprite (< (vector2-x velocity) 0)))
+          ((/= (vector2-y velocity) 0)
            (animated-sprite-2d-set-animation sprite "up")
-           (animated-sprite-2d-set-flip-v sprite (> (gdext:vector2-y velocity) 0))))))
+           (animated-sprite-2d-set-flip-v sprite (> (vector2-y velocity) 0))))))
 
 ;; func _on_body_entered(_body):
 ;;     hide() # Player disappears after being hit.
