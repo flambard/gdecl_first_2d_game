@@ -8,5 +8,5 @@
                  (:file "player" :depends-on ("packages" "engine-methods"))
                  (:file "mob" :depends-on ("packages" "engine-methods"))
                  (:file "hud" :depends-on ("packages" "engine-methods"))
-                 (:file "main" :depends-on ("packages" "engine-methods"))
+                 (:file "main" :depends-on ("packages" "engine-methods" "player" "hud"))
                  (:file "dodge-the-creeps" :depends-on ("packages" "player" "mob" "hud" "main"))))
