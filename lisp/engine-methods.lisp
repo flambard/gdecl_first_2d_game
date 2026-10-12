@@ -97,3 +97,7 @@
               (process-in-physics gdext-ffi:+variant-type-bool+ nil)
               (ignore-time-scale gdext-ffi:+variant-type-bool+ nil))
   :return-type gdext-ffi:+variant-type-object+) ; SceneTreeTimer, a RefCounted
+
+(gdext:define-engine-vararg-method scene-tree-call-group ("SceneTree" "call_group" 1257962832)
+  :arguments ((group gdext-ffi:+variant-type-string-name+)
+              (method gdext-ffi:+variant-type-string-name+)))

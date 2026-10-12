@@ -59,6 +59,7 @@
 ;;     $StartTimer.start()
 ;;     $HUD.update_score(score)
 ;;     $HUD.show_message("Get Ready")
+;;     get_tree().call_group("mobs", "queue_free")
 (defun main-new-game (main)
   (let ((object (main-object main)))
     (setf (main-score main) 0)
@@ -67,7 +68,8 @@
     (timer-start (get-node object (gdext:npath "StartTimer")))
     (let ((hud (get-node object (gdext:npath "HUD"))))
       (hud-update-score hud (main-score main))
-      (hud-show-message hud "Get Ready"))))
+      (hud-show-message hud "Get Ready"))
+    (scene-tree-call-group (get-tree object) (gdext:sname "mobs") (gdext:sname "queue_free"))))
 
 ;; func _on_score_timer_timeout():
 ;;     score += 1
