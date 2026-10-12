@@ -26,9 +26,7 @@
                      :arguments '(("mob_scene" :object)))
   (gdext:bind-property "Main" "mob_scene" :object
                        "get_mob_scene" "set_mob_scene"
-                       :hint gdext-ffi:+property-hint-resource-type+
-                       :hint-string "PackedScene"
-                       :property-class-name "PackedScene")
+                       :class "PackedScene")
   (gdext:bind-method "Main" "game_over" #'main-game-over)
   (gdext:bind-method "Main" "new_game" #'main-new-game)
   (gdext:bind-method "Main" "_on_score_timer_timeout" #'main-on-score-timer-timeout)
