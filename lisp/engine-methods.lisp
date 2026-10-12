@@ -101,3 +101,8 @@
 (gdext:define-engine-vararg-method scene-tree-call-group ("SceneTree" "call_group" 1257962832)
   :arguments ((group gdext-ffi:+variant-type-string-name+)
               (method gdext-ffi:+variant-type-string-name+)))
+
+(gdext:define-engine-method audio-stream-player-play ("AudioStreamPlayer" "play" 1958160172)
+  :arguments ((from-position gdext-ffi:+variant-type-float+ 0.0)))
+
+(gdext:define-engine-method audio-stream-player-stop ("AudioStreamPlayer" "stop" 3218959716))

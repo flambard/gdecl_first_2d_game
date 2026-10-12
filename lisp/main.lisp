@@ -47,11 +47,15 @@
 ;;     $ScoreTimer.stop()
 ;;     $MobTimer.stop()
 ;;     $HUD.show_game_over()
+;;     $Music.stop()
+;;     $DeathSound.play()
 (defun main-game-over (main)
   (let ((object (main-object main)))
     (timer-stop (get-node object (gdext:npath "ScoreTimer")))
     (timer-stop (get-node object (gdext:npath "MobTimer")))
-    (hud-show-game-over (get-node object (gdext:npath "HUD")))))
+    (hud-show-game-over (get-node object (gdext:npath "HUD")))
+    (audio-stream-player-stop (get-node object (gdext:npath "Music")))
+    (audio-stream-player-play (get-node object (gdext:npath "DeathSound")))))
 
 ;; func new_game():
 ;;     score = 0
@@ -60,6 +64,7 @@
 ;;     $HUD.update_score(score)
 ;;     $HUD.show_message("Get Ready")
 ;;     get_tree().call_group("mobs", "queue_free")
+;;     $Music.play()
 (defun main-new-game (main)
   (let ((object (main-object main)))
     (setf (main-score main) 0)
@@ -69,7 +74,8 @@
     (let ((hud (get-node object (gdext:npath "HUD"))))
       (hud-update-score hud (main-score main))
       (hud-show-message hud "Get Ready"))
-    (scene-tree-call-group (get-tree object) (gdext:sname "mobs") (gdext:sname "queue_free"))))
+    (scene-tree-call-group (get-tree object) (gdext:sname "mobs") (gdext:sname "queue_free"))
+    (audio-stream-player-play (get-node object (gdext:npath "Music")))))
 
 ;; func _on_score_timer_timeout():
 ;;     score += 1
