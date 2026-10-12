@@ -2,6 +2,11 @@
 
 ;;; The Main scene's code, from "The main game scene"
 
+;; extends Node
+;;
+;; @export var mob_scene: PackedScene
+;; var score
+
 ;; The Lisp object of a Main
 (defstruct main
   ;; The Godot object
@@ -38,12 +43,22 @@
     (setf (main-mob-scene main) (gdext:add-reference mob-scene))
     (gdext:release-reference old)))
 
+;; func game_over():
+;;     $ScoreTimer.stop()
+;;     $MobTimer.stop()
+;;     $HUD.show_game_over()
 (defun main-game-over (main)
   (let ((object (main-object main)))
     (timer-stop (get-node object (gdext:npath "ScoreTimer")))
     (timer-stop (get-node object (gdext:npath "MobTimer")))
     (hud-show-game-over (get-node object (gdext:npath "HUD")))))
 
+;; func new_game():
+;;     score = 0
+;;     $Player.start($StartPosition.position)
+;;     $StartTimer.start()
+;;     $HUD.update_score(score)
+;;     $HUD.show_message("Get Ready")
 (defun main-new-game (main)
   (let ((object (main-object main)))
     (setf (main-score main) 0)
@@ -54,10 +69,16 @@
       (hud-update-score hud (main-score main))
       (hud-show-message hud "Get Ready"))))
 
+;; func _on_score_timer_timeout():
+;;     score += 1
+;;     $HUD.update_score(score)
 (defun main-on-score-timer-timeout (main)
   (incf (main-score main))
   (hud-update-score (get-node (main-object main) (gdext:npath "HUD")) (main-score main)))
 
+;; func _on_start_timer_timeout():
+;;     $MobTimer.start()
+;;     $ScoreTimer.start()
 (defun main-on-start-timer-timeout (main)
   (let ((object (main-object main)))
     (timer-start (get-node object (gdext:npath "MobTimer")))
@@ -67,6 +88,30 @@
   "A random float between FROM and TO, like randf_range() in GDScript."
   (+ from (random (float (- to from) 1d0))))
 
+;; func _on_mob_timer_timeout():
+;;     # Create a new instance of the Mob scene.
+;;     var mob = mob_scene.instantiate()
+;;
+;;     # Choose a random location on Path2D.
+;;     var mob_spawn_location = $MobPath/MobSpawnLocation
+;;     mob_spawn_location.progress_ratio = randf()
+;;
+;;     # Set the mob's position to the random location.
+;;     mob.position = mob_spawn_location.position
+;;
+;;     # Set the mob's direction perpendicular to the path direction.
+;;     var direction = mob_spawn_location.rotation + PI / 2
+;;
+;;     # Add some randomness to the direction.
+;;     direction += randf_range(-PI / 4, PI / 4)
+;;     mob.rotation = direction
+;;
+;;     # Choose the velocity for the mob.
+;;     var velocity = Vector2(randf_range(150.0, 250.0), 0.0)
+;;     mob.linear_velocity = velocity.rotated(direction)
+;;
+;;     # Spawn the mob by adding it to the Main scene.
+;;     add_child(mob)
 (defun main-on-mob-timer-timeout (main)
   (let* ((object (main-object main))
          ;; Create a new instance of the Mob scene.
