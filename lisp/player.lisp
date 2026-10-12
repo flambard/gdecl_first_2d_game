@@ -9,33 +9,21 @@
 ;; @export var speed = 400 # How fast the player will move (pixels/sec).
 ;; var screen_size # Size of the game window.
 
-;; The Lisp object of a Player
-(defstruct (player (:include gdext:godot-object))
-  ;; How fast the player will move (pixels/sec). Exported as the property speed.
-  (speed 400)
-  ;; Size of the game window
-  screen-size
-  ;; The child nodes AnimatedSprite2D and CollisionShape2D, set in _ready like
-  ;; @onready vars
-  animated-sprite
-  collision-shape)
-
-(defun register-player ()
-  (gdext:register-class "Player" "Area2D"
-                        :constructor (lambda (pointer) (make-player :pointer pointer)))
-  (gdext:bind-method "Player" "get_speed" #'player-speed
-                     :return-type :int)
-  (gdext:bind-method "Player" "set_speed"
-                     (lambda (player speed) (setf (player-speed player) speed))
-                     :arguments '(("speed" :int)))
-  (gdext:bind-property "Player" "speed" :int "get_speed" "set_speed")
-  (gdext:bind-signal "Player" "hit")
-  (gdext:bind-method "Player" "start" #'player-start
-                     :arguments '(("pos" :vector2)))
-  (gdext:bind-method "Player" "_on_body_entered" #'player-on-body-entered
-                     :arguments '(("body" :object)))
-  (gdext:bind-virtual "Player" "_ready" #'player-ready)
-  (gdext:bind-virtual "Player" "_process" #'player-process))
+;; The Lisp object of a Player is a PLAYER
+(gdext:define-class player ("Player" "Area2D")
+  (;; How fast the player will move (pixels/sec).
+   (speed 400 :export :int)
+   ;; Size of the game window
+   screen-size
+   ;; The child nodes AnimatedSprite2D and CollisionShape2D, set in _ready like
+   ;; @onready vars
+   animated-sprite
+   collision-shape)
+  (:signal "hit")
+  (:method "start" player-start :arguments (("pos" :vector2)))
+  (:method "_on_body_entered" player-on-body-entered :arguments (("body" :object)))
+  (:virtual "_ready" player-ready)
+  (:virtual "_process" player-process))
 
 ;; func _ready():
 ;;     screen_size = get_viewport_rect().size

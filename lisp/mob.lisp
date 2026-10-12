@@ -4,14 +4,13 @@
 
 ;; extends RigidBody2D
 
-;;; A Mob has no state of its own, so its Lisp object is a plain
-;;; GDEXT:GODOT-OBJECT (the default constructor of REGISTER-CLASS).
+;;; A Mob has no state of its own, so its Lisp object, a MOB, has no slots.
 
-(defun register-mob ()
-  (gdext:register-class "Mob" "RigidBody2D")
-  (gdext:bind-method "Mob" "_on_visible_on_screen_notifier_2d_screen_exited"
-                     #'mob-on-visible-on-screen-notifier-2d-screen-exited)
-  (gdext:bind-virtual "Mob" "_ready" #'mob-ready))
+(gdext:define-class mob ("Mob" "RigidBody2D")
+  ()
+  (:method "_on_visible_on_screen_notifier_2d_screen_exited"
+           mob-on-visible-on-screen-notifier-2d-screen-exited)
+  (:virtual "_ready" mob-ready))
 
 (defun pick-random (list)
   (elt list (random (length list))))

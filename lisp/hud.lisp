@@ -7,20 +7,17 @@
 ;; # Notifies `Main` node that the button has been pressed
 ;; signal start_game
 
-;;; A HUD has no state of its own, so its Lisp object is a plain
-;;; GDEXT:GODOT-OBJECT (the default constructor of REGISTER-CLASS).
+;;; A HUD has no state of its own, so its Lisp object, a HUD, has no slots.
 
-(defun register-hud ()
-  (gdext:register-class "HUD" "CanvasLayer")
+(gdext:define-class hud ("HUD" "CanvasLayer")
+  ()
   ;; Notifies `Main` node that the button has been pressed
-  (gdext:bind-signal "HUD" "start_game")
-  (gdext:bind-method "HUD" "show_message" #'hud-show-message
-                     :arguments '(("text" :string)))
-  (gdext:bind-method "HUD" "show_game_over" #'hud-show-game-over)
-  (gdext:bind-method "HUD" "update_score" #'hud-update-score
-                     :arguments '(("score" :int)))
-  (gdext:bind-method "HUD" "_on_start_button_pressed" #'hud-on-start-button-pressed)
-  (gdext:bind-method "HUD" "_on_message_timer_timeout" #'hud-on-message-timer-timeout))
+  (:signal "start_game")
+  (:method "show_message" hud-show-message :arguments (("text" :string)))
+  (:method "show_game_over" hud-show-game-over)
+  (:method "update_score" hud-update-score :arguments (("score" :int)))
+  (:method "_on_start_button_pressed" hud-on-start-button-pressed)
+  (:method "_on_message_timer_timeout" hud-on-message-timer-timeout))
 
 ;; func show_message(text):
 ;;     $Message.text = text

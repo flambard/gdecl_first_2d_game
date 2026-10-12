@@ -7,34 +7,26 @@
 ;; @export var mob_scene: PackedScene
 ;; var score
 
-;; The Lisp object of a Main
-(defstruct (main (:include gdext:godot-object))
-  ;; The Mob scene, a PackedScene, exported as the property mob_scene. A
-  ;; RefCounted object, so Main holds a reference to it while it's here.
-  (mob-scene (ffi:make-null-pointer :void))
-  score)
-
-(defun register-main ()
-  (gdext:register-class "Main" "Node"
-                        :constructor (lambda (pointer) (make-main :pointer pointer))
-                        :destructor (lambda (main) (gdext:release-reference (main-mob-scene main))))
-  (gdext:bind-method "Main" "get_mob_scene" #'main-mob-scene
-                     :return-type :object)
-  (gdext:bind-method "Main" "set_mob_scene" #'set-main-mob-scene
-                     :arguments '(("mob_scene" :object)))
-  (gdext:bind-property "Main" "mob_scene" :object
-                       "get_mob_scene" "set_mob_scene"
-                       :class "PackedScene")
-  (gdext:bind-method "Main" "game_over" #'main-game-over)
-  (gdext:bind-method "Main" "new_game" #'main-new-game)
-  (gdext:bind-method "Main" "_on_score_timer_timeout" #'main-on-score-timer-timeout)
-  (gdext:bind-method "Main" "_on_start_timer_timeout" #'main-on-start-timer-timeout)
-  (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout))
+;; The Lisp object of a Main is a MAIN
+(gdext:define-class main ("Main" "Node")
+  (;; The Mob scene, a PackedScene. A RefCounted object, so Main holds a
+   ;; reference to it while it's here.
+   (mob-scene nil :export :object :class "PackedScene" :setter set-main-mob-scene)
+   score)
+  (:destructor main-free)
+  (:method "game_over" main-game-over)
+  (:method "new_game" main-new-game)
+  (:method "_on_score_timer_timeout" main-on-score-timer-timeout)
+  (:method "_on_start_timer_timeout" main-on-start-timer-timeout)
+  (:method "_on_mob_timer_timeout" main-on-mob-timer-timeout))
 
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
     (setf (main-mob-scene main) (gdext:add-reference mob-scene))
     (gdext:release-reference old)))
+
+(defun main-free (main)
+  (gdext:release-reference (main-mob-scene main)))
 
 ;; func game_over():
 ;;     $ScoreTimer.stop()
