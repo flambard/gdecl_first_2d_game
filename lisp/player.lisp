@@ -39,7 +39,8 @@
         (player-animated-sprite player)
         (get-node (player-object player) (gdext:npath "AnimatedSprite2D"))
         (player-collision-shape player)
-        (get-node (player-object player) (gdext:npath "CollisionShape2D"))))
+        (get-node (player-object player) (gdext:npath "CollisionShape2D")))
+  (hide (player-object player)))
 
 (defun action-pressed-p (action)
   (is-action-pressed (gdext:singleton "Input") action))
