@@ -64,10 +64,6 @@
   (timer-start (node-get-node main "MobTimer"))
   (timer-start (node-get-node main "ScoreTimer")))
 
-(defun randf-range (from to)
-  "A random float between FROM and TO, like randf_range() in GDScript."
-  (+ from (random (float (- to from) 1d0))))
-
 ;; func _on_mob_timer_timeout():
 ;;     # Create a new instance of the Mob scene.
 ;;     var mob = mob_scene.instantiate()
@@ -97,7 +93,7 @@
         (mob (packed-scene-instantiate (main-mob-scene main)))
         (mob-spawn-location (node-get-node main "MobPath/MobSpawnLocation")))
     ;; Choose a random location on Path2D.
-    (path-follow-2d-set-progress-ratio mob-spawn-location (random 1d0))
+    (path-follow-2d-set-progress-ratio mob-spawn-location (randf))
     ;; Set the mob's position to the random location.
     (node-2d-set-position mob (node-2d-get-position mob-spawn-location))
     ;; Set the mob's direction perpendicular to the path direction.

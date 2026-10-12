@@ -13,7 +13,8 @@
   (:virtual "_ready" mob-ready))
 
 (defun pick-random (list)
-  (elt list (random (length list))))
+  "A random element of LIST, like pick_random() of an Array in GDScript."
+  (elt list (randi-range 0 (1- (length list)))))
 
 ;; func _ready():
 ;;     var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
