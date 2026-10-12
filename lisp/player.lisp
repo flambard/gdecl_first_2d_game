@@ -10,9 +10,7 @@
 ;; var screen_size # Size of the game window.
 
 ;; The Lisp object of a Player
-(defstruct player
-  ;; The Godot object
-  object
+(defstruct (player (:include gdext:godot-object))
   ;; How fast the player will move (pixels/sec). Exported as the property speed.
   (speed 400)
   ;; Size of the game window
@@ -24,7 +22,7 @@
 
 (defun register-player ()
   (gdext:register-class "Player" "Area2D"
-                        :constructor (lambda (object) (make-player :object object)))
+                        :constructor (lambda (pointer) (make-player :pointer pointer)))
   (gdext:bind-method "Player" "get_speed" #'player-speed
                      :return-type :int)
   (gdext:bind-method "Player" "set_speed"
@@ -44,12 +42,12 @@
 ;;     hide()
 (defun player-ready (player)
   (setf (player-screen-size player)
-        (gdext:rect2-size (get-viewport-rect (player-object player)))
+        (gdext:rect2-size (get-viewport-rect player))
         (player-animated-sprite player)
-        (get-node (player-object player) "AnimatedSprite2D")
+        (get-node player "AnimatedSprite2D")
         (player-collision-shape player)
-        (get-node (player-object player) "CollisionShape2D"))
-  (hide (player-object player)))
+        (get-node player "CollisionShape2D"))
+  (hide player))
 
 (defun action-pressed-p (action)
   (is-action-pressed (gdext:singleton "Input") action))
@@ -84,7 +82,6 @@
 ;;         $AnimatedSprite2D.flip_v = velocity.y > 0
 (defun player-process (player delta)
   (let ((velocity (gdext:vector2))      ; The player's movement vector
-        (object (player-object player))
         (sprite (player-animated-sprite player)))
     (when (action-pressed-p (gdext:sname "move_right"))
       (incf (gdext:vector2-x velocity)))
@@ -100,7 +97,7 @@
            (animated-sprite-2d-play sprite))
           (t
            (animated-sprite-2d-stop sprite)))
-    (set-position object (gdext:vector2-clamp (gdext:vector2+ (get-position object)
+    (set-position player (gdext:vector2-clamp (gdext:vector2+ (get-position player)
                                                               (gdext:vector2* velocity delta))
                                               (gdext:vector2)
                                               (player-screen-size player)))
@@ -119,18 +116,16 @@
 ;;     $CollisionShape2D.set_deferred("disabled", true)
 (defun player-on-body-entered (player body)
   (declare (ignore body))
-  (let ((object (player-object player)))
-    (hide object)                       ; Player disappears after being hit.
-    (emit-signal object "hit")
-    ;; Must be deferred as we can't change physics properties on a physics callback.
-    (set-deferred (player-collision-shape player) "disabled" t)))
+  (hide player)                         ; Player disappears after being hit.
+  (emit-signal player "hit")
+  ;; Must be deferred as we can't change physics properties on a physics callback.
+  (set-deferred (player-collision-shape player) "disabled" t))
 
 ;; func start(pos):
 ;;     position = pos
 ;;     show()
 ;;     $CollisionShape2D.disabled = false
 (defun player-start (player pos)
-  (let ((object (player-object player)))
-    (set-position object pos)
-    (show object)
-    (collision-shape-2d-set-disabled (player-collision-shape player) nil)))
+  (set-position player pos)
+  (show player)
+  (collision-shape-2d-set-disabled (player-collision-shape player) nil))

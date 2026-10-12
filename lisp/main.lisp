@@ -8,9 +8,7 @@
 ;; var score
 
 ;; The Lisp object of a Main
-(defstruct main
-  ;; The Godot object
-  object
+(defstruct (main (:include gdext:godot-object))
   ;; The Mob scene, a PackedScene, exported as the property mob_scene. A
   ;; RefCounted object, so Main holds a reference to it while it's here.
   (mob-scene (ffi:make-null-pointer :void))
@@ -18,7 +16,7 @@
 
 (defun register-main ()
   (gdext:register-class "Main" "Node"
-                        :constructor (lambda (object) (make-main :object object))
+                        :constructor (lambda (pointer) (make-main :pointer pointer))
                         :destructor (lambda (main) (gdext:release-reference (main-mob-scene main))))
   (gdext:bind-method "Main" "get_mob_scene" #'main-mob-scene
                      :return-type :object)
@@ -33,9 +31,6 @@
   (gdext:bind-method "Main" "_on_start_timer_timeout" #'main-on-start-timer-timeout)
   (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout))
 
-;;; The HUD's Lisp object is its Godot object, so the HUD functions are called
-;;; with the node itself.
-
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
     (setf (main-mob-scene main) (gdext:add-reference mob-scene))
@@ -48,12 +43,11 @@
 ;;     $Music.stop()
 ;;     $DeathSound.play()
 (defun main-game-over (main)
-  (let ((object (main-object main)))
-    (timer-stop (get-node object "ScoreTimer"))
-    (timer-stop (get-node object "MobTimer"))
-    (hud-show-game-over (get-node object "HUD"))
-    (audio-stream-player-stop (get-node object "Music"))
-    (audio-stream-player-play (get-node object "DeathSound"))))
+  (timer-stop (get-node main "ScoreTimer"))
+  (timer-stop (get-node main "MobTimer"))
+  (hud-show-game-over (get-node main "HUD"))
+  (audio-stream-player-stop (get-node main "Music"))
+  (audio-stream-player-play (get-node main "DeathSound")))
 
 ;; func new_game():
 ;;     score = 0
@@ -64,31 +58,28 @@
 ;;     get_tree().call_group("mobs", "queue_free")
 ;;     $Music.play()
 (defun main-new-game (main)
-  (let ((object (main-object main)))
-    (setf (main-score main) 0)
-    (player-start (gdext:lisp-object (get-node object "Player"))
-                  (get-position (get-node object "StartPosition")))
-    (timer-start (get-node object "StartTimer"))
-    (let ((hud (get-node object "HUD")))
-      (hud-update-score hud (main-score main))
-      (hud-show-message hud "Get Ready"))
-    (scene-tree-call-group (get-tree object) "mobs" "queue_free")
-    (audio-stream-player-play (get-node object "Music"))))
+  (setf (main-score main) 0)
+  (player-start (get-node main "Player") (get-position (get-node main "StartPosition")))
+  (timer-start (get-node main "StartTimer"))
+  (let ((hud (get-node main "HUD")))
+    (hud-update-score hud (main-score main))
+    (hud-show-message hud "Get Ready"))
+  (scene-tree-call-group (get-tree main) "mobs" "queue_free")
+  (audio-stream-player-play (get-node main "Music")))
 
 ;; func _on_score_timer_timeout():
 ;;     score += 1
 ;;     $HUD.update_score(score)
 (defun main-on-score-timer-timeout (main)
   (incf (main-score main))
-  (hud-update-score (get-node (main-object main) "HUD") (main-score main)))
+  (hud-update-score (get-node main "HUD") (main-score main)))
 
 ;; func _on_start_timer_timeout():
 ;;     $MobTimer.start()
 ;;     $ScoreTimer.start()
 (defun main-on-start-timer-timeout (main)
-  (let ((object (main-object main)))
-    (timer-start (get-node object "MobTimer"))
-    (timer-start (get-node object "ScoreTimer"))))
+  (timer-start (get-node main "MobTimer"))
+  (timer-start (get-node main "ScoreTimer")))
 
 (defun randf-range (from to)
   "A random float between FROM and TO, like randf_range() in GDScript."
@@ -119,10 +110,9 @@
 ;;     # Spawn the mob by adding it to the Main scene.
 ;;     add_child(mob)
 (defun main-on-mob-timer-timeout (main)
-  (let* ((object (main-object main))
-         ;; Create a new instance of the Mob scene.
-         (mob (packed-scene-instantiate (main-mob-scene main)))
-         (mob-spawn-location (get-node object "MobPath/MobSpawnLocation")))
+  (let (;; Create a new instance of the Mob scene.
+        (mob (packed-scene-instantiate (main-mob-scene main)))
+        (mob-spawn-location (get-node main "MobPath/MobSpawnLocation")))
     ;; Choose a random location on Path2D.
     (path-follow-2d-set-progress-ratio mob-spawn-location (random 1d0))
     ;; Set the mob's position to the random location.
@@ -136,4 +126,4 @@
       (let ((velocity (gdext:vector2 (float (randf-range 150 250) 1.0) 0.0)))
         (rigid-body-2d-set-linear-velocity mob (gdext:vector2-rotated velocity direction))))
     ;; Spawn the mob by adding it to the Main scene.
-    (add-child object mob)))
+    (add-child main mob)))

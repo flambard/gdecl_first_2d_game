@@ -4,8 +4,8 @@
 
 ;; extends RigidBody2D
 
-;;; A Mob has no state of its own, so its Lisp object is the Godot object (the
-;;; default constructor of REGISTER-CLASS).
+;;; A Mob has no state of its own, so its Lisp object is a plain
+;;; GDEXT:GODOT-OBJECT (the default constructor of REGISTER-CLASS).
 
 (defun register-mob ()
   (gdext:register-class "Mob" "RigidBody2D")

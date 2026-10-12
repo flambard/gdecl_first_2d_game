@@ -7,8 +7,8 @@
 ;; # Notifies `Main` node that the button has been pressed
 ;; signal start_game
 
-;;; A HUD has no state of its own, so its Lisp object is the Godot object (the
-;;; default constructor of REGISTER-CLASS).
+;;; A HUD has no state of its own, so its Lisp object is a plain
+;;; GDEXT:GODOT-OBJECT (the default constructor of REGISTER-CLASS).
 
 (defun register-hud ()
   (gdext:register-class "HUD" "CanvasLayer")
