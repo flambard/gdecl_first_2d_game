@@ -21,7 +21,7 @@
 ;;     $AnimatedSprite2D.animation = mob_types.pick_random()
 ;;     $AnimatedSprite2D.play()
 (defun mob-ready (mob)
-  (let ((sprite (get-node mob (gdext:npath "AnimatedSprite2D"))))
+  (let ((sprite (get-node mob "AnimatedSprite2D")))
     (gdext:with-reference (sprite-frames (animated-sprite-2d-get-sprite-frames sprite))
       (let ((mob-types (sprite-frames-get-animation-names sprite-frames)))
         (gdext:with-string-name (animation (pick-random mob-types))

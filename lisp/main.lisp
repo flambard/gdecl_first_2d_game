@@ -51,11 +51,11 @@
 ;;     $DeathSound.play()
 (defun main-game-over (main)
   (let ((object (main-object main)))
-    (timer-stop (get-node object (gdext:npath "ScoreTimer")))
-    (timer-stop (get-node object (gdext:npath "MobTimer")))
-    (hud-show-game-over (get-node object (gdext:npath "HUD")))
-    (audio-stream-player-stop (get-node object (gdext:npath "Music")))
-    (audio-stream-player-play (get-node object (gdext:npath "DeathSound")))))
+    (timer-stop (get-node object "ScoreTimer"))
+    (timer-stop (get-node object "MobTimer"))
+    (hud-show-game-over (get-node object "HUD"))
+    (audio-stream-player-stop (get-node object "Music"))
+    (audio-stream-player-play (get-node object "DeathSound"))))
 
 ;; func new_game():
 ;;     score = 0
@@ -68,29 +68,29 @@
 (defun main-new-game (main)
   (let ((object (main-object main)))
     (setf (main-score main) 0)
-    (player-start (gdext:lisp-object (get-node object (gdext:npath "Player")))
-                  (get-position (get-node object (gdext:npath "StartPosition"))))
-    (timer-start (get-node object (gdext:npath "StartTimer")))
-    (let ((hud (get-node object (gdext:npath "HUD"))))
+    (player-start (gdext:lisp-object (get-node object "Player"))
+                  (get-position (get-node object "StartPosition")))
+    (timer-start (get-node object "StartTimer"))
+    (let ((hud (get-node object "HUD")))
       (hud-update-score hud (main-score main))
       (hud-show-message hud "Get Ready"))
-    (scene-tree-call-group (get-tree object) (gdext:sname "mobs") (gdext:sname "queue_free"))
-    (audio-stream-player-play (get-node object (gdext:npath "Music")))))
+    (scene-tree-call-group (get-tree object) "mobs" "queue_free")
+    (audio-stream-player-play (get-node object "Music"))))
 
 ;; func _on_score_timer_timeout():
 ;;     score += 1
 ;;     $HUD.update_score(score)
 (defun main-on-score-timer-timeout (main)
   (incf (main-score main))
-  (hud-update-score (get-node (main-object main) (gdext:npath "HUD")) (main-score main)))
+  (hud-update-score (get-node (main-object main) "HUD") (main-score main)))
 
 ;; func _on_start_timer_timeout():
 ;;     $MobTimer.start()
 ;;     $ScoreTimer.start()
 (defun main-on-start-timer-timeout (main)
   (let ((object (main-object main)))
-    (timer-start (get-node object (gdext:npath "MobTimer")))
-    (timer-start (get-node object (gdext:npath "ScoreTimer")))))
+    (timer-start (get-node object "MobTimer"))
+    (timer-start (get-node object "ScoreTimer"))))
 
 (defun randf-range (from to)
   "A random float between FROM and TO, like randf_range() in GDScript."
@@ -124,7 +124,7 @@
   (let* ((object (main-object main))
          ;; Create a new instance of the Mob scene.
          (mob (packed-scene-instantiate (main-mob-scene main)))
-         (mob-spawn-location (get-node object (gdext:npath "MobPath/MobSpawnLocation"))))
+         (mob-spawn-location (get-node object "MobPath/MobSpawnLocation")))
     ;; Choose a random location on Path2D.
     (path-follow-2d-set-progress-ratio mob-spawn-location (random 1d0))
     ;; Set the mob's position to the random location.

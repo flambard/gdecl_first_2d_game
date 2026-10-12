@@ -47,9 +47,9 @@
   (setf (player-screen-size player)
         (gdext:rect2-size (get-viewport-rect (player-object player)))
         (player-animated-sprite player)
-        (get-node (player-object player) (gdext:npath "AnimatedSprite2D"))
+        (get-node (player-object player) "AnimatedSprite2D")
         (player-collision-shape player)
-        (get-node (player-object player) (gdext:npath "CollisionShape2D")))
+        (get-node (player-object player) "CollisionShape2D"))
   (hide (player-object player)))
 
 (defun action-pressed-p (action)
@@ -106,11 +106,11 @@
                                               (gdext:vector2)
                                               (player-screen-size player)))
     (cond ((/= (gdext:vector2-x velocity) 0)
-           (animated-sprite-2d-set-animation sprite (gdext:sname "walk"))
+           (animated-sprite-2d-set-animation sprite "walk")
            (animated-sprite-2d-set-flip-v sprite nil)
            (animated-sprite-2d-set-flip-h sprite (< (gdext:vector2-x velocity) 0)))
           ((/= (gdext:vector2-y velocity) 0)
-           (animated-sprite-2d-set-animation sprite (gdext:sname "up"))
+           (animated-sprite-2d-set-animation sprite "up")
            (animated-sprite-2d-set-flip-v sprite (> (gdext:vector2-y velocity) 0))))))
 
 ;; func _on_body_entered(_body):
@@ -122,9 +122,9 @@
   (declare (ignore body))
   (let ((object (player-object player)))
     (hide object)                       ; Player disappears after being hit.
-    (emit-signal object (gdext:sname "hit"))
+    (emit-signal object "hit")
     ;; Must be deferred as we can't change physics properties on a physics callback.
-    (set-deferred (player-collision-shape player) (gdext:sname "disabled") t)))
+    (set-deferred (player-collision-shape player) "disabled" t)))
 
 ;; func start(pos):
 ;;     position = pos
