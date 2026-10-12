@@ -28,12 +28,10 @@
   (gdext:bind-method "Main" "new_game" #'main-new-game)
   (gdext:bind-method "Main" "_on_score_timer_timeout" #'main-on-score-timer-timeout)
   (gdext:bind-method "Main" "_on_start_timer_timeout" #'main-on-start-timer-timeout)
-  (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout)
-  (gdext:bind-virtual "Main" "_ready" #'main-ready))
+  (gdext:bind-method "Main" "_on_mob_timer_timeout" #'main-on-mob-timer-timeout))
 
-;; Temporary, to start a game when the scene runs, until the HUD does it
-(defun main-ready (main)
-  (main-new-game main))
+;;; The HUD's Lisp object is its Godot object, so the HUD functions are called
+;;; with the node itself.
 
 (defun set-main-mob-scene (main mob-scene)
   (let ((old (main-mob-scene main)))
@@ -43,17 +41,22 @@
 (defun main-game-over (main)
   (let ((object (main-object main)))
     (timer-stop (get-node object (gdext:npath "ScoreTimer")))
-    (timer-stop (get-node object (gdext:npath "MobTimer")))))
+    (timer-stop (get-node object (gdext:npath "MobTimer")))
+    (hud-show-game-over (get-node object (gdext:npath "HUD")))))
 
 (defun main-new-game (main)
   (let ((object (main-object main)))
     (setf (main-score main) 0)
     (player-start (gdext:lisp-object (get-node object (gdext:npath "Player")))
                   (get-position (get-node object (gdext:npath "StartPosition"))))
-    (timer-start (get-node object (gdext:npath "StartTimer")))))
+    (timer-start (get-node object (gdext:npath "StartTimer")))
+    (let ((hud (get-node object (gdext:npath "HUD"))))
+      (hud-update-score hud (main-score main))
+      (hud-show-message hud "Get Ready"))))
 
 (defun main-on-score-timer-timeout (main)
-  (incf (main-score main)))
+  (incf (main-score main))
+  (hud-update-score (get-node (main-object main) (gdext:npath "HUD")) (main-score main)))
 
 (defun main-on-start-timer-timeout (main)
   (let ((object (main-object main)))
