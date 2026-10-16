@@ -9,25 +9,29 @@
 ;; @export var speed = 400 # How fast the player will move (pixels/sec).
 ;; var screen_size # Size of the game window.
 
-;; The Lisp object of a Player is a PLAYER
-(gdext:define-class player ("Player" "Area2D")
+;; Player is a CLOS class, defined with GODOT-CLOS: its Lisp objects are
+;; instances of PLAYER, and what Godot calls are generic functions
+(defclass player (area-2d)
   (;; How fast the player will move (pixels/sec).
-   (speed 400 :export :int)
+   (speed :initform 400 :export :int :reader player-speed)
    ;; Size of the game window
-   screen-size
+   (screen-size :accessor player-screen-size)
    ;; The child nodes AnimatedSprite2D and CollisionShape2D
-   (animated-sprite nil :onready "AnimatedSprite2D")
-   (collision-shape nil :onready "CollisionShape2D"))
-  (:signal "hit")
-  (:method "start" player-start :arguments (("pos" :vector2)))
-  (:method "_on_body_entered" player-on-body-entered :arguments (("body" :object)))
-  (:virtual "_ready" player-ready)
-  (:virtual "_process" player-process))
+   (animated-sprite :onready "AnimatedSprite2D" :reader player-animated-sprite)
+   (collision-shape :onready "CollisionShape2D" :reader player-collision-shape))
+  (:metaclass godot-class)
+  (:signals (hit)))
+
+(define-godot-generic start (self (pos :vector2)))
+
+;; Connected to the signal body_entered in player.tscn
+(define-godot-generic on-body-entered (self (body :object))
+  (:godot-name "_on_body_entered"))
 
 ;; func _ready():
 ;;     screen_size = get_viewport_rect().size
 ;;     hide()
-(defun player-ready (player)
+(defmethod ready ((player player))
   (setf (player-screen-size player) (rect2-size (canvas-item-get-viewport-rect player)))
   (canvas-item-hide player))
 
@@ -59,7 +63,7 @@
 ;;     elif velocity.y != 0:
 ;;         $AnimatedSprite2D.animation = "up"
 ;;         $AnimatedSprite2D.flip_v = velocity.y > 0
-(defun player-process (player delta)
+(defmethod process ((player player) delta)
   (let ((velocity (vector2))            ; The player's movement vector
         (sprite (player-animated-sprite player)))
     (when (input-is-action-pressed "move_right")
@@ -93,7 +97,7 @@
 ;;     hit.emit()
 ;;     # Must be deferred as we can't change physics properties on a physics callback.
 ;;     $CollisionShape2D.set_deferred("disabled", true)
-(defun player-on-body-entered (player body)
+(defmethod on-body-entered ((player player) body)
   (declare (ignore body))
   (canvas-item-hide player)             ; Player disappears after being hit.
   (object-emit-signal player "hit")
@@ -104,7 +108,7 @@
 ;;     position = pos
 ;;     show()
 ;;     $CollisionShape2D.disabled = false
-(defun player-start (player pos)
+(defmethod start ((player player) pos)
   (node-2d-set-position player pos)
   (canvas-item-show player)
   (collision-shape-2d-set-disabled (player-collision-shape player) nil))

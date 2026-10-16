@@ -5,6 +5,7 @@
 ;;; generated from gdecl/extension_api.json when the code is compiled, and added
 ;;; to the package GODOT.
 
+(gdext:define-engine-class "Area2D")
 (gdext:define-engine-class "AnimatedSprite2D")
 (gdext:define-engine-class "SpriteFrames")
 (gdext:define-engine-class "CollisionShape2D")
