@@ -7,16 +7,28 @@
 ;; @export var mob_scene: PackedScene
 ;; var score
 
-;; The Lisp object of a Main is a MAIN
-(gdext:define-class main ("Main" "Node")
+;; Main is a CLOS class, like Player
+(defclass main (node)
   (;; The Mob scene. A PackedScene is RefCounted, so Main keeps a reference to it.
-   (mob-scene nil :export :object :class "PackedScene")
-   score)
-  (:method "game_over" main-game-over)
-  (:method "new_game" main-new-game)
-  (:method "_on_score_timer_timeout" main-on-score-timer-timeout)
-  (:method "_on_start_timer_timeout" main-on-start-timer-timeout)
-  (:method "_on_mob_timer_timeout" main-on-mob-timer-timeout))
+   (mob-scene :initform nil :export :object :class "PackedScene" :reader main-mob-scene)
+   (score :accessor main-score))
+  (:metaclass godot-class))
+
+;; Connected to the signal hit of Player in main.tscn
+(define-godot-generic game-over (self))
+
+;; Connected to the signal start_game of HUD in main.tscn
+(define-godot-generic new-game (self))
+
+;; Connected to the signal timeout of the timers in main.tscn
+(define-godot-generic on-score-timer-timeout (self)
+  (:godot-name "_on_score_timer_timeout"))
+
+(define-godot-generic on-start-timer-timeout (self)
+  (:godot-name "_on_start_timer_timeout"))
+
+(define-godot-generic on-mob-timer-timeout (self)
+  (:godot-name "_on_mob_timer_timeout"))
 
 ;; func game_over():
 ;;     $ScoreTimer.stop()
@@ -24,10 +36,10 @@
 ;;     $HUD.show_game_over()
 ;;     $Music.stop()
 ;;     $DeathSound.play()
-(defun main-game-over (main)
+(defmethod game-over ((main main))
   (timer-stop (node-get-node main "ScoreTimer"))
   (timer-stop (node-get-node main "MobTimer"))
-  (hud-show-game-over (node-get-node main "HUD"))
+  (show-game-over (node-get-node main "HUD"))
   (audio-stream-player-stop (node-get-node main "Music"))
   (audio-stream-player-play (node-get-node main "DeathSound")))
 
@@ -39,28 +51,28 @@
 ;;     $HUD.show_message("Get Ready")
 ;;     get_tree().call_group("mobs", "queue_free")
 ;;     $Music.play()
-(defun main-new-game (main)
+(defmethod new-game ((main main))
   (setf (main-score main) 0)
   (start (node-get-node main "Player")
          (node-2d-get-position (node-get-node main "StartPosition")))
   (timer-start (node-get-node main "StartTimer"))
   (let ((hud (node-get-node main "HUD")))
-    (hud-update-score hud (main-score main))
-    (hud-show-message hud "Get Ready"))
+    (update-score hud (main-score main))
+    (show-message hud "Get Ready"))
   (scene-tree-call-group (node-get-tree main) "mobs" "queue_free")
   (audio-stream-player-play (node-get-node main "Music")))
 
 ;; func _on_score_timer_timeout():
 ;;     score += 1
 ;;     $HUD.update_score(score)
-(defun main-on-score-timer-timeout (main)
+(defmethod on-score-timer-timeout ((main main))
   (incf (main-score main))
-  (hud-update-score (node-get-node main "HUD") (main-score main)))
+  (update-score (node-get-node main "HUD") (main-score main)))
 
 ;; func _on_start_timer_timeout():
 ;;     $MobTimer.start()
 ;;     $ScoreTimer.start()
-(defun main-on-start-timer-timeout (main)
+(defmethod on-start-timer-timeout ((main main))
   (timer-start (node-get-node main "MobTimer"))
   (timer-start (node-get-node main "ScoreTimer")))
 
@@ -88,7 +100,7 @@
 ;;
 ;;     # Spawn the mob by adding it to the Main scene.
 ;;     add_child(mob)
-(defun main-on-mob-timer-timeout (main)
+(defmethod on-mob-timer-timeout ((main main))
   (let (;; Create a new instance of the Mob scene.
         (mob (packed-scene-instantiate (main-mob-scene main)))
         (mob-spawn-location (node-get-node main "MobPath/MobSpawnLocation")))

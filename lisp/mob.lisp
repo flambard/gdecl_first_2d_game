@@ -4,13 +4,15 @@
 
 ;; extends RigidBody2D
 
-;;; A Mob has no state of its own, so its Lisp object, a MOB, has no slots.
-
-(gdext:define-class mob ("Mob" "RigidBody2D")
+;; Mob is a CLOS class, like Player. A Mob has no state of its own, so it has no
+;; slots.
+(defclass mob (rigid-body-2d)
   ()
-  (:method "_on_visible_on_screen_notifier_2d_screen_exited"
-           mob-on-visible-on-screen-notifier-2d-screen-exited)
-  (:virtual "_ready" mob-ready))
+  (:metaclass godot-class))
+
+;; Connected to the signal screen_exited of VisibleOnScreenNotifier2D in mob.tscn
+(define-godot-generic on-visible-on-screen-notifier-2d-screen-exited (self)
+  (:godot-name "_on_visible_on_screen_notifier_2d_screen_exited"))
 
 (defun pick-random (sequence)
   "A random element of SEQUENCE, like pick_random() of an Array in GDScript."
@@ -20,7 +22,7 @@
 ;;     var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
 ;;     $AnimatedSprite2D.animation = mob_types.pick_random()
 ;;     $AnimatedSprite2D.play()
-(defun mob-ready (mob)
+(defmethod ready ((mob mob))
   (let ((sprite (node-get-node mob "AnimatedSprite2D")))
     (let ((mob-types (sprite-frames-get-animation-names
                       (animated-sprite-2d-get-sprite-frames sprite))))
@@ -29,5 +31,5 @@
 
 ;; func _on_visible_on_screen_notifier_2d_screen_exited():
 ;;     queue_free()
-(defun mob-on-visible-on-screen-notifier-2d-screen-exited (mob)
+(defmethod on-visible-on-screen-notifier-2d-screen-exited ((mob mob))
   (node-queue-free mob))
