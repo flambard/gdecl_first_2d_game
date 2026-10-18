@@ -53,12 +53,12 @@
 (defmethod show-game-over ((hud hud))
   (show-message hud "Game Over")
   ;; Wait until the MessageTimer has counted down.
-  (gdext:after-signal ((node-get-node hud "MessageTimer") "timeout" :target hud)
+  (after-signal ((node-get-node hud "MessageTimer") "timeout" :target hud)
     (let ((message (node-get-node hud "Message")))
       (label-set-text message "Dodge the Creeps!")
       (canvas-item-show message))
     ;; Make a one-shot timer and wait for it to finish.
-    (gdext:after-signal ((scene-tree-create-timer (node-get-tree hud) 1.0) "timeout" :target hud)
+    (after-signal ((scene-tree-create-timer (node-get-tree hud) 1.0) "timeout" :target hud)
       (canvas-item-show (node-get-node hud "StartButton")))))
 
 ;; func update_score(score):
