@@ -6,12 +6,12 @@
 ;;; to the package GODOT. Each class also gets a struct, named like it, that the
 ;;; game's CLOS classes inherit from, e.g. CANVAS-LAYER for HUD.
 
-(gdext:define-engine-class "CanvasLayer")
-(gdext:define-engine-class "Area2D")
-(gdext:define-engine-class "AnimatedSprite2D")
-(gdext:define-engine-class "SpriteFrames")
-(gdext:define-engine-class "CollisionShape2D")
-(gdext:define-engine-class "PathFollow2D")
-(gdext:define-engine-class "RigidBody2D")
-(gdext:define-engine-class "Label")
-(gdext:define-engine-class "AudioStreamPlayer")
+(define-engine-class "CanvasLayer")
+(define-engine-class "Area2D")
+(define-engine-class "AnimatedSprite2D")
+(define-engine-class "SpriteFrames")
+(define-engine-class "CollisionShape2D")
+(define-engine-class "PathFollow2D")
+(define-engine-class "RigidBody2D")
+(define-engine-class "Label")
+(define-engine-class "AudioStreamPlayer")
